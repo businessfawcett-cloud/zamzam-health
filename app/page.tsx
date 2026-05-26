@@ -1,50 +1,13 @@
-import { sanityFetch } from "@/sanity/lib/live";
-import { defineQuery } from "groq";
+import { client } from "@/sanity/lib/client";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 import Link from "next/link";
 
-const homePageQuery = defineQuery(`
-  *[_type == "homePage"][0] {
-    hero {
-      heading,
-      subheading,
-      primaryCtaText,
-      primaryCtaLink,
-      secondaryCtaText,
-      secondaryCtaLink
-    },
-    welcomeHeading,
-    welcomeText
-  }
-`);
-
-const siteSettingsQuery = defineQuery(`
-  *[_type == "globalSettings"][0] {
-    businessName,
-    tagline,
-    phone
-  }
-`);
-
-const servicesQuery = defineQuery(`
-  *[_type == "service" && defined(title)] | order(order asc) {
-    _id,
-    title,
-    description,
-    icon
-  }
-`);
-
 interface HomePageData {
-  hero?: {
-    heading?: string;
-    subheading?: string;
-    primaryCtaText?: string;
-    primaryCtaLink?: string;
-    secondaryCtaText?: string;
-    secondaryCtaLink?: string;
-  };
+  heroHeading?: string;
+  heroSubheading?: string;
+  primaryCtaText?: string;
+  secondaryCtaText?: string;
   welcomeHeading?: string;
   welcomeText?: string;
 }
@@ -119,14 +82,24 @@ const services = [
 ];
 
 export default async function Home() {
-  const [{ data: homePageRaw }, { data: settingsRaw }] = await Promise.all([
-    sanityFetch({ query: homePageQuery }),
-    sanityFetch({ query: siteSettingsQuery }),
+  const [homePage, settings] = await Promise.all([
+    client.fetch(`*[_type == "homePage"][0] {
+      heroHeading,
+      heroSubheading,
+      primaryCtaText,
+      secondaryCtaText,
+      welcomeHeading,
+      welcomeText
+    }`),
+    client.fetch(`*[_type == "globalSettings"][0] {
+      businessName,
+      tagline,
+      phone
+    }`),
   ]);
-  const homePage = homePageRaw as HomePageData;
-  const settings = settingsRaw as SiteSettingsData;
 
-  const hero = homePage?.hero;
+  const hp = homePage as HomePageData | null;
+  const st = settings as SiteSettingsData | null;
 
   return (
     <>
@@ -136,23 +109,23 @@ export default async function Home() {
         <section className="bg-gradient-to-br from-navy to-navy-dark text-white">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-20 lg:py-24">
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight max-w-2xl">
-              {hero?.heading || "Your Health, Your Partner, Your Neighborhood"}
+              {hp?.heroHeading || "Your Health, Your Partner, Your Neighborhood"}
             </h1>
             <p className="mt-4 text-lg sm:text-xl text-blue-200 leading-relaxed max-w-xl">
-              {hero?.subheading || "Board-certified internal medicine physician providing comprehensive primary care for individuals and families in Chicago."}
+              {hp?.heroSubheading || "Board-certified internal medicine physician providing comprehensive primary care for individuals and families in Chicago."}
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-3">
               <Link
-                href={hero?.primaryCtaLink || "/contact"}
+                href="/contact"
                 className="inline-flex items-center justify-center px-6 py-3 text-base font-semibold rounded-md bg-green hover:bg-green-dark text-white transition-colors"
               >
-                {hero?.primaryCtaText || "Schedule an Appointment"}
+                {hp?.primaryCtaText || "Schedule an Appointment"}
               </Link>
               <Link
-                href={hero?.secondaryCtaLink || "/services"}
+                href="/services"
                 className="inline-flex items-center justify-center px-6 py-3 text-base font-semibold rounded-md border-2 border-white/60 text-white hover:bg-white/10 transition-colors"
               >
-                {hero?.secondaryCtaText || "Our Services"}
+                {hp?.secondaryCtaText || "Our Services"}
               </Link>
             </div>
           </div>
@@ -161,11 +134,11 @@ export default async function Home() {
         <section className="py-16 sm:py-20">
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
             <h2 className="text-2xl sm:text-3xl font-bold text-navy">
-              {homePage?.welcomeHeading || "Welcome to Northside Primary Care"}
+              {hp?.welcomeHeading || "Welcome to Northside Primary Care"}
             </h2>
             <div className="mt-6 max-w-3xl space-y-4 text-gray-700 leading-relaxed">
               <p>
-                {homePage?.welcomeText ||
+                {hp?.welcomeText ||
                   "At Northside Primary Care, we believe that excellent healthcare begins with a strong relationship between you and your physician. Dr. Sarah Mitchell takes the time to listen, understand your health history, and work with you to create a personalized care plan that fits your life."}
               </p>
               <p>

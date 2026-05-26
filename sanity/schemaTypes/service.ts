@@ -20,22 +20,9 @@ export const service = defineType({
       rows: 3,
     }),
     defineField({
-      name: 'icon',
-      title: 'Icon',
-      type: 'string',
-      description: 'SVG icon name (e.g. heart, shield, bolt, plus, syringe, person)',
-    }),
-    defineField({
       name: 'order',
       title: 'Order',
       type: 'number',
     }),
-  ],
-  orderings: [
-    {
-      title: 'Display Order',
-      name: 'orderAsc',
-      by: [{ field: 'order', direction: 'asc' }],
-    },
   ],
 })
