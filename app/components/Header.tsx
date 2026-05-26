@@ -11,14 +11,21 @@ const navItems = [
   { label: "Contact", href: "/contact" },
 ];
 
-export default function Header() {
+interface HeaderProps {
+  businessName?: string;
+  tagline?: string;
+}
+
+export default function Header({ businessName, tagline }: HeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const name = businessName || "Northside Primary Care";
+  const parts = name.split(/(?<=Northside)\s*/);
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-gray-200">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         <Link href="/" className="text-xl font-bold text-navy tracking-tight">
-          Northside<span className="text-green">Primary Care</span>
+          {parts[0]}<span className="text-green">{parts[1] || "Primary Care"}</span>
         </Link>
 
         <button

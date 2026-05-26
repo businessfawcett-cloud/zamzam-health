@@ -3,21 +3,6 @@ import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 import Link from "next/link";
 
-interface HomePageData {
-  heroHeading?: string;
-  heroSubheading?: string;
-  primaryCtaText?: string;
-  secondaryCtaText?: string;
-  welcomeHeading?: string;
-  welcomeText?: string;
-}
-
-interface SiteSettingsData {
-  businessName?: string;
-  tagline?: string;
-  phone?: string;
-}
-
 const services = [
   {
     title: "Annual Physical Exams",
@@ -82,50 +67,42 @@ const services = [
 ];
 
 export default async function Home() {
-  const [homePage, settings] = await Promise.all([
-    client.fetch(`*[_type == "homePage"][0] {
-      heroHeading,
-      heroSubheading,
-      primaryCtaText,
-      secondaryCtaText,
-      welcomeHeading,
-      welcomeText
-    }`),
-    client.fetch(`*[_type == "globalSettings"][0] {
-      businessName,
-      tagline,
-      phone
-    }`),
+  const [settings, homePage] = await Promise.all([
+    client.fetch(`*[_type == "globalSettings"][0]`),
+    client.fetch(`*[_type == "homePage"][0]`),
   ]);
 
-  const hp = homePage as HomePageData | null;
-  const st = settings as SiteSettingsData | null;
+  const st = settings as Record<string, unknown> | null;
+  const hp = homePage as Record<string, unknown> | null;
 
   return (
     <>
-      <Header />
+      <Header
+        businessName={st?.businessName as string | undefined}
+        tagline={st?.tagline as string | undefined}
+      />
 
       <main>
         <section className="bg-gradient-to-br from-navy to-navy-dark text-white">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-20 lg:py-24">
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight max-w-2xl">
-              {hp?.heroHeading || "Your Health, Your Partner, Your Neighborhood"}
+              {(hp?.heroHeading as string) || "Your Health, Your Partner, Your Neighborhood"}
             </h1>
             <p className="mt-4 text-lg sm:text-xl text-blue-200 leading-relaxed max-w-xl">
-              {hp?.heroSubheading || "Board-certified internal medicine physician providing comprehensive primary care for individuals and families in Chicago."}
+              {(hp?.heroSubheading as string) || "Board-certified internal medicine physician providing comprehensive primary care for individuals and families in Chicago."}
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-3">
               <Link
                 href="/contact"
                 className="inline-flex items-center justify-center px-6 py-3 text-base font-semibold rounded-md bg-green hover:bg-green-dark text-white transition-colors"
               >
-                {hp?.primaryCtaText || "Schedule an Appointment"}
+                {(hp?.primaryCtaText as string) || "Schedule an Appointment"}
               </Link>
               <Link
                 href="/services"
                 className="inline-flex items-center justify-center px-6 py-3 text-base font-semibold rounded-md border-2 border-white/60 text-white hover:bg-white/10 transition-colors"
               >
-                {hp?.secondaryCtaText || "Our Services"}
+                {(hp?.secondaryCtaText as string) || "Our Services"}
               </Link>
             </div>
           </div>
@@ -134,11 +111,11 @@ export default async function Home() {
         <section className="py-16 sm:py-20">
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
             <h2 className="text-2xl sm:text-3xl font-bold text-navy">
-              {hp?.welcomeHeading || "Welcome to Northside Primary Care"}
+              {(hp?.welcomeHeading as string) || "Welcome to Northside Primary Care"}
             </h2>
             <div className="mt-6 max-w-3xl space-y-4 text-gray-700 leading-relaxed">
               <p>
-                {hp?.welcomeText ||
+                {(hp?.welcomeText as string) ||
                   "At Northside Primary Care, we believe that excellent healthcare begins with a strong relationship between you and your physician. Dr. Sarah Mitchell takes the time to listen, understand your health history, and work with you to create a personalized care plan that fits your life."}
               </p>
               <p>
@@ -205,7 +182,13 @@ export default async function Home() {
         </section>
       </main>
 
-      <Footer />
+      <Footer
+        businessName={st?.businessName as string | undefined}
+        address={st?.address as string | undefined}
+        phone={st?.phone as string | undefined}
+        email={st?.email as string | undefined}
+        hours={st?.hours as string | undefined}
+      />
     </>
   );
 }
