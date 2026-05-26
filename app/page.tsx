@@ -81,7 +81,7 @@ export default async function Home() {
     });
 
   const homePage = await client
-    .fetch(`*[_type == "homePage"][0]`)
+    .fetch(`*[_type == "homePage"] | order(_createdAt desc)[0]`)
     .catch((e) => {
       console.error("HomePage fetch failed:", e);
       return null;
