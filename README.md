@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Northside Primary Care Website
 
-## Getting Started
+A static website for a solo primary care physician in Chicago. Built with plain HTML, CSS, and JavaScript — no frameworks, no build tools, no dependencies.
 
-First, run the development server:
+## Deploy on Netlify
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+1. Upload the entire project folder to Netlify (drag-and-drop or connect your Git repository).
+2. No build settings are needed — the site is ready to serve as-is.
+
+## Editing Content
+
+All text content is stored in a single file:
+
+```
+js/content.js
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `js/content.js` and update any text inside the `CONTENT` object. Changes take effect immediately — no build step required.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Common edits
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| What to change | Find in content.js |
+|---|---|
+| Practice name | `practice.name` |
+| Doctor name | `practice.doctorName` |
+| Address | `practice.address` |
+| Phone number | `practice.phone` |
+| Email | `practice.email` |
+| Office hours | `practice.hours` |
+| Home page text | `pages.home` |
+| About page text | `pages.about` |
+| Services descriptions | `pages.services` |
+| Insurance info | `pages.insurance` |
+| Contact page text | `pages.contact` |
+| Footer copyright | `footer.copyright` |
 
-## Learn More
+### Meta titles & descriptions
 
-To learn more about Next.js, take a look at the following resources:
+Each page has its own meta title and description in `content.js` under `pages.{page}.meta`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Contact Form
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The appointment request form at `/contact.html` uses [Formspree](https://formspree.io). To receive form submissions:
 
-## Deploy on Vercel
+1. Create a free Formspree account.
+2. Create a new form and copy the form ID.
+3. In `contact.html`, update the form `action` attribute:
+   ```
+   action="https://formspree.io/f/your-form-id-here"
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## File Structure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+├── index.html          Home page
+├── about.html          About Dr. Mitchell
+├── services.html       Medical services
+├── insurance.html      Insurance & patient info
+├── contact.html        Contact form & location
+├── css/
+│   └── styles.css      All styles (mobile-first, responsive)
+├── js/
+│   ├── content.js      ALL text content (edit this)
+│   └── script.js       Navigation, FAQ accordion, content injection
+└── README.md           This file
+```
+
+## Accessibility
+
+- Semantic HTML5 (`nav`, `main`, `article`, `footer`, `h1`–`h3`)
+- Skip navigation link
+- `aria-current`, `aria-expanded`, `aria-controls`, `aria-label`
+- WCAG AA compliant color contrast
+- Focus-visible outlines for keyboard navigation
+- Screen-reader-friendly utility classes
