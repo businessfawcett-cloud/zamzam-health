@@ -16,7 +16,6 @@ export const structure: StructureResolver = (S) =>
             .schemaType('globalSettings')
             .documentId('siteSettings')
         ),
-      ...S.documentTypeListItems().filter(
-        (item) => item.getId() !== 'globalSettings'
-      ),
+      S.documentTypeListItem('homePage').title('Home Page'),
+      S.documentTypeListItem('service').title('Service'),
     ])
