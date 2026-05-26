@@ -8,7 +8,7 @@ export const siteSettings = defineType({
   icon: CogIcon,
   fields: [
     defineField({
-      name: 'name',
+      name: 'businessName',
       title: 'Business Name',
       type: 'string',
     }),
@@ -16,11 +16,6 @@ export const siteSettings = defineType({
       name: 'tagline',
       title: 'Tagline',
       type: 'string',
-    }),
-    defineField({
-      name: 'logo',
-      title: 'Logo',
-      type: 'image',
     }),
     defineField({
       name: 'phone',
@@ -43,6 +38,11 @@ export const siteSettings = defineType({
       title: 'Business Hours',
       type: 'text',
       rows: 3,
+    }),
+    defineField({
+      name: 'logo',
+      title: 'Logo',
+      type: 'image',
     }),
   ],
 })
