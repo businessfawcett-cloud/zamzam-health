@@ -67,6 +67,12 @@ const services = [
 ];
 
 export default async function Home() {
+  const testUrl =
+    "https://71mcx452.api.sanity.io/v2023-01-01/data/query/production?query=*[_type+%3D%3D+%22globalSettings%22][0]";
+  const testRes = await fetch(testUrl);
+  const testData = await testRes.json();
+  console.log("Direct API test:", JSON.stringify(testData));
+
   const settings = await client
     .fetch(`*[_type == "globalSettings"][0]`)
     .catch((e) => {
