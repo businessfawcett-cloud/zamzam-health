@@ -67,10 +67,22 @@ const services = [
 ];
 
 export default async function Home() {
-  const [settings, homePage] = await Promise.all([
-    client.fetch(`*[_type == "globalSettings"][0]`),
-    client.fetch(`*[_type == "homePage"][0]`),
-  ]);
+  const settings = await client
+    .fetch(`*[_type == "globalSettings"][0]`)
+    .catch((e) => {
+      console.error("Settings fetch failed:", e);
+      return null;
+    });
+
+  const homePage = await client
+    .fetch(`*[_type == "homePage"][0]`)
+    .catch((e) => {
+      console.error("HomePage fetch failed:", e);
+      return null;
+    });
+
+  console.log("Sanity settings:", settings);
+  console.log("Sanity homePage:", homePage);
 
   const st = settings as Record<string, unknown> | null;
   const hp = homePage as Record<string, unknown> | null;
